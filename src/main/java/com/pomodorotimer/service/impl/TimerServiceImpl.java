@@ -7,18 +7,17 @@ import javax.swing.JLabel;
 import com.pomodorotimer.service.TimerService;
 
 public class TimerServiceImpl implements TimerService {
-
     /* 
      * Declara os minutos e segundos
      * Cria um label chamado timeLabel. Aqui será inserida a String time 
      * para ser atualizada na classe TimerController
      */
-    static Integer seconds = 0;
-    static Integer minutes = 15;
-    static JLabel timeLabel = new JLabel();
+    private Integer seconds = 0;
+    private Integer minutes = 15;
+    private JLabel timeLabel = new JLabel();
 
     @Override
-    public void countdown() {
+    public void formattedTime() {
         /* 
          * Formata os minutos e segundos para ter 0 a esquerda
          * Print apenas para debug
@@ -29,31 +28,38 @@ public class TimerServiceImpl implements TimerService {
         timeLabel.setForeground(Color.WHITE);
         timeLabel.setText(time);
     }
-
     /* 
      * Código porco de getters e setters para acessar os métodos no controller
      */
-    public static Integer getSeconds() {
+    public TimerServiceImpl(Integer seconds, Integer minutes, JLabel timeLabel) {
+        this.seconds = seconds;
+        this.minutes = minutes;
+        this.timeLabel = timeLabel;
+    }
+
+    public TimerServiceImpl() {}
+
+    public Integer getSeconds() {
         return seconds;
     }
 
-    public static void setSeconds(Integer seconds) {
-        TimerServiceImpl.seconds = seconds;
+    public void setSeconds(Integer seconds) {
+        this.seconds = seconds;
     }
 
-    public static Integer getMinutes() {
+    public Integer getMinutes() {
         return minutes;
     }
 
-    public static void setMinutes(Integer minutes) {
-        TimerServiceImpl.minutes = minutes;
+    public void setMinutes(Integer minutes) {
+        this.minutes = minutes;
     }
 
-    public static JLabel getTimeLabel() {
+    public JLabel getTimeLabel() {
         return timeLabel;
     }
 
-    public static void setTimeLabel(JLabel timeLabel) {
-        TimerServiceImpl.timeLabel = timeLabel;
+    public void setTimeLabel(JLabel timeLabel) {
+        this.timeLabel = timeLabel;
     }
 }

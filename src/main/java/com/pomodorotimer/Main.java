@@ -1,10 +1,10 @@
 package com.pomodorotimer;
 
-import com.pomodorotimer.controller.TimerController;
+import com.pomodorotimer.view.TimerUI;
 
 public class Main {
     public static void main(String[] args) {
-        TimerController timerController = new TimerController();
-        timerController.timerScreen();
+        TimerUI timerUI = new TimerUI();
+        timerUI.timerScreen();
     }
 }
