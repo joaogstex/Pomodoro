@@ -12,8 +12,9 @@ public class TimerServiceImpl implements TimerService {
      * Cria um label chamado timeLabel. Aqui será inserida a String time 
      * para ser atualizada na classe TimerController
      */
-    private Integer seconds = 0;
-    private Integer minutes = 15;
+    private int seconds = 5;
+    private int minutes = 0;
+
     private JLabel timeLabel = new JLabel();
 
     @Override
@@ -24,22 +25,28 @@ public class TimerServiceImpl implements TimerService {
          * Depois declara a cor do texto e então adiciona o texto como time
          */
         String time = String.format("%02d:%02d", minutes, seconds);
-        System.out.println(time);
-        timeLabel.setForeground(Color.WHITE);
-        timeLabel.setText(time);
+        //System.out.println(time);
+        if (timeLabel != null) {
+            timeLabel.setForeground(new Color(0, 0, 0, 200));
+            timeLabel.setText(time);
+        }
+    }
+
+    public void reset() {
+        this.minutes = 0;
+        this.seconds = 5;
+        formattedTime();
+    }
+
+    //sem usar esse método por conta de testes
+    public int getInitialMinutes() {
+        return 15; 
     }
     /* 
-     * Código porco de getters e setters para acessar os métodos no controller
+     * Código porco de getters e setters para acessar os métodos no TimerUI
      */
-    public TimerServiceImpl(Integer seconds, Integer minutes, JLabel timeLabel) {
-        this.seconds = seconds;
-        this.minutes = minutes;
-        this.timeLabel = timeLabel;
-    }
 
-    public TimerServiceImpl() {}
-
-    public Integer getSeconds() {
+    public int getSeconds() {
         return seconds;
     }
 
@@ -47,7 +54,7 @@ public class TimerServiceImpl implements TimerService {
         this.seconds = seconds;
     }
 
-    public Integer getMinutes() {
+    public int getMinutes() {
         return minutes;
     }
 
