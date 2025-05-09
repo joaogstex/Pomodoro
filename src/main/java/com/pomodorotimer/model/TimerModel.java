@@ -6,17 +6,16 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import com.pomodorotimer.service.AudioService;
-import com.pomodorotimer.service.impl.TimerServiceImpl;
 
 public class TimerModel {
 
-    private TimerServiceImpl timerServiceImpl = new TimerServiceImpl();
+    private TimerImpl timerImpl = new TimerImpl();
     private AudioService audioService = new AudioService();
     private Boolean started;
     private Boolean paused;
 
-    public TimerModel(TimerServiceImpl timerServiceImpl, AudioService audioService) {
-        this.timerServiceImpl = timerServiceImpl;
+    public TimerModel(TimerImpl timerImpl, AudioService audioService) {
+        this.timerImpl = timerImpl;
         this.audioService = audioService;
     }
 
@@ -41,14 +40,14 @@ public class TimerModel {
     public void restart() throws UnsupportedAudioFileException, IOException, LineUnavailableException {
         paused = false;
         started = true;
-        timerServiceImpl.reset();
+        timerImpl.reset();
         audioService.audio();
     }
 
     public void resetTimeOnly() {
         paused = false;
         started = true;
-        timerServiceImpl.reset();
+        timerImpl.reset();
     }
 
     public void stopAudio() {

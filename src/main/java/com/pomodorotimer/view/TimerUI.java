@@ -25,8 +25,8 @@ import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
 import com.pomodorotimer.model.TimerModel;
+import com.pomodorotimer.model.TimerImpl;
 import com.pomodorotimer.service.AudioService;
-import com.pomodorotimer.service.impl.TimerServiceImpl;
 
 public class TimerUI {
 
@@ -38,10 +38,10 @@ public class TimerUI {
 
     private boolean start = false;
     private boolean paused = false;
+    private Timer timer;
 
     private JFrame frame;
     private JPanel panel;
-    private Timer timer;
     private JButton startButton;
     private JButton pauseButton;
     private JButton unpauseButton;
@@ -50,21 +50,17 @@ public class TimerUI {
     private JLabel timeLabel;
 
     private Image icon;
-    private BufferedImage originalImage;
     private Image scaledImage;
+    private BufferedImage originalImage;
 
-    private TimerServiceImpl timerService = new TimerServiceImpl();
-    private TimerModel timerModel = new TimerModel(timerService, new AudioService());
+    private TimerImpl timerImpl = new TimerImpl();
+    private TimerModel timerModel = new TimerModel(timerImpl, new AudioService());
 
     private ActionListener taskListener;
     
     public void timerScreen() throws IOException {
         System.out.println("Memória usada (MB): " + (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024 / 1024);
-        /*
-        * Método que cria a tela do Pomodoro
-        * Insere ícone personalizado
-        * Insere uma imagem de fundo reescalada para o tamanho do frame
-        */
+        
         frame = new JFrame();
         icon = ImageIO.read(new File("D:\\Downloads\\pomodoro-icon.png"));
         originalImage = ImageIO.read(new File("D:\\Downloads\\tomato.png"));
@@ -83,13 +79,7 @@ public class TimerUI {
             }
         };
         backgroundPanel.setLayout(new BorderLayout());
-        /*
-        * Botões de
-        * Start
-        * Pause
-        * Unpause
-        * Restart
-        */
+
         startButton = new JButton("Start");
         pauseButton = new JButton("Pause");
         unpauseButton = new JButton("Unpause");
@@ -111,17 +101,17 @@ public class TimerUI {
         timeLabel.setFont(new Font("Arial", Font.PLAIN, 60));
         timeLabel.setHorizontalAlignment(SwingConstants.CENTER);
         timeLabel.setVerticalAlignment(SwingConstants.CENTER);
-        timerService.setTimeLabel(timeLabel);
+        timerImpl.setTimeLabel(timeLabel);
         
         buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         buttonPanel.setOpaque(false);
         
         startButton.addActionListener(e -> {
             try {
-
-                if (timerService.getMinutes() == 0 && timerService.getSeconds() == 0) {
+                System.out.println("Memória usada (MB): " + (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024 / 1024);
+                if (timerImpl.getMinutes() == 0 && timerImpl.getSeconds() == 0) {
                     timerModel.resetTimeOnly(); // reseta o tempo E para som, se necessário
-                    timerService.formattedTime();
+                    timerImpl.formattedTime();
                     start = false; // permite tocar som de novo na próxima execução
                 }
 
@@ -141,13 +131,13 @@ public class TimerUI {
             }
         });
         pauseButton.addActionListener(e -> {
-
+            System.out.println("Memória usada (MB): " + (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024 / 1024);
             timerModel.pause();
             paused = true;
 
         });
         unpauseButton.addActionListener(e -> {
-
+            System.out.println("Memória usada (MB): " + (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024 / 1024);
             timerModel.unpause();
             paused = false;
 
@@ -160,12 +150,12 @@ public class TimerUI {
                 }
                 timer = null;
 
-                //timer.stop();
                 timerModel.restart(); // reinicia a lógica interna
                 timerModel.stopAudio();
 
-                timerService.formattedTime();
+                timerImpl.formattedTime();
 
+                //sem esse novo Timer o restart não decrementa 
                 timer = new Timer(1000, taskListener);
                 timer.start();
 
@@ -185,9 +175,9 @@ public class TimerUI {
 
         Font buttonFont = new Font("Segoe UI", Font.BOLD, 18);
 
-        Color startColor = new Color(0x28a745); // Verde
-        Color pauseColor = new Color(0xffc107); // Amarelo
-        Color unpauseColor = new Color(0x17a2b8); // Azul claro
+        Color startColor = new Color(0xdc3545); 
+        Color pauseColor = new Color(0xdc3545); 
+        Color unpauseColor = new Color(0xdc3545); 
         Color restartColor = new Color(0xdc3545); // Vermelho
         
         Color textColor = Color.WHITE;
@@ -198,9 +188,9 @@ public class TimerUI {
         for (int i = 0; i < buttons.length; i++) {
             JButton btn = buttons[i];
             Color originalColor = colors[i];
-            btn.setFont(buttonFont); // aplica a fonte a cada botão
-            btn.setBackground(originalColor); // cor de fundo
-            btn.setForeground(textColor); // cor do texto
+            btn.setFont(buttonFont); 
+            btn.setBackground(originalColor); 
+            btn.setForeground(textColor);
             btn.setFocusPainted(false); // Remove borda de foco/contorno azul ao clicar
             btn.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Padding interno
             btn.setOpaque(true); // Garante que o fundo seja colorido
@@ -223,18 +213,15 @@ public class TimerUI {
         buttonPanel.add(unpauseButton);
         buttonPanel.add(restartButton);
         
-        panel.add(timerService.getTimeLabel(), BorderLayout.CENTER);
+        panel.add(timerImpl.getTimeLabel(), BorderLayout.CENTER);
         panel.add(buttonPanel, BorderLayout.SOUTH);
-        panel.setBackground(Color.BLACK);
-        
-        frame.add(panel);
         
         taskListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (start && !paused) {
-                    int minutes = timerService.getMinutes();
-                    int seconds = timerService.getSeconds();
+                    int minutes = timerImpl.getMinutes();
+                    int seconds = timerImpl.getSeconds();
                     if (minutes == 0 && seconds == 0) {
                         timer.stop();
                         timerModel.stopAudio();
@@ -247,16 +234,17 @@ public class TimerUI {
                     } else {
                         seconds--;
                     }
-                    timerService.setMinutes(minutes);
-                    timerService.setSeconds(seconds);
-                    timerService.formattedTime();
+                    timerImpl.setMinutes(minutes);
+                    timerImpl.setSeconds(seconds);
+                    timerImpl.formattedTime();
                 }
             }
         };
-
+        
         timer = new Timer(1000, taskListener);
         timer.start();
-        timerService.formattedTime();
+        timerImpl.formattedTime();
+        frame.add(panel);
         frame.setVisible(true);
     }
 }

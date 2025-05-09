@@ -1,12 +1,9 @@
-package com.pomodorotimer.service.impl;
+package com.pomodorotimer.model;
 
 import java.awt.Color;
-
 import javax.swing.JLabel;
 
-import com.pomodorotimer.service.TimerService;
-
-public class TimerServiceImpl implements TimerService {
+public class TimerImpl {
     /* 
      * Declara os minutos e segundos
      * Cria um label chamado timeLabel. Aqui será inserida a String time 
@@ -17,7 +14,6 @@ public class TimerServiceImpl implements TimerService {
 
     private JLabel timeLabel = new JLabel();
 
-    @Override
     public void formattedTime() {
         /* 
          * Formata os minutos e segundos para ter 0 a esquerda
